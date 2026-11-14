@@ -1,0 +1,22 @@
+# 비밀 — API 키
+.env
+.env.*
+!.env.example
+
+# 가상환경
+.venv/
+venv/
+
+# 파이썬 캐시·빌드
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# 에디터·OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
