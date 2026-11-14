@@ -156,7 +156,8 @@ async def test_air_quality_summary_and_station_filter():
              "pm25Value": "10", "pm10Grade": "", "pm25Grade": "1"}]}}}))
     r = await call("get_air_quality", {"region": "서울특별시"})
     s = data(r)["summary"]
-    assert s["pm10_avg"] == 40 and s["pm25_avg"] == 15 and s["pm25_grade"] == "좋음"
+    assert s["pm10_avg"] == 40 and s["pm25_avg"] == 15 and s["pm25_grade_1h"] == "좋음"
+    assert data(r)["stations"][0]["pm25_grade_24h"] == "보통"
     r = await call("get_air_quality", {"region": "서울", "station": "종로"})
     assert len(data(r)["stations"]) == 1
     r = await call("get_air_quality", {"region": "서울", "station": "없는곳"})
