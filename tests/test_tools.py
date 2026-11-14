@@ -250,3 +250,13 @@ async def test_subway_no_data_is_not_found():
         "status": 500, "code": "INFO-200", "message": "해당하는 데이터가 없습니다."}))
     r = await call("get_subway_arrival", {"station": "없는역"})
     assert text(r).startswith("[NOT_FOUND]")
+
+
+@respx.mock
+async def test_subway_sample_key_other_station_explains_limit(monkeypatch):
+    monkeypatch.setenv("SEOUL_OPENAPI_KEY", "sample")
+    route = respx.get(url__regex=SEOUL_RE.pattern).mock(return_value=httpx.Response(200, json={
+        "status": 500, "code": "ERROR-336", "message": "데이터요청은 한번에 최대 1000건을 넘을 수 없습니다."}))
+    r = await call("get_subway_arrival", {"station": "강남"})
+    assert text(r).startswith("[AUTH_ERROR]") and "서울" in text(r)
+    assert "/realtimeStationArrival/0/5/" in str(route.calls.last.request.url)

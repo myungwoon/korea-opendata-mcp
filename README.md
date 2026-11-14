@@ -51,7 +51,7 @@
 
 쓰지 않을 API는 신청하지 않아도 됩니다. 그 API를 쓰는 도구만 `[AUTH_ERROR]`를 냅니다.
 
-> **바로 시험해 보기:** ECOS와 서울 열린데이터광장은 시험용 키 `sample`을 제공합니다. `ECOS_API_KEY=sample`, `SEOUL_OPENAPI_KEY=sample`로 설정하면 키 발급 없이 환율·금리·지하철 도구를 써 볼 수 있습니다 (조회 건수 제한: ECOS 10건, 서울 5건).
+> **바로 시험해 보기:** ECOS와 서울 열린데이터광장은 시험용 키 `sample`을 제공합니다. `ECOS_API_KEY=sample`, `SEOUL_OPENAPI_KEY=sample`로 설정하면 키 발급 없이 환율·금리·지하철 도구를 써 볼 수 있습니다 (제한: ECOS는 한 번에 10건, 서울 지하철은 **서울역만** 5건).
 
 ## 2. 설치
 

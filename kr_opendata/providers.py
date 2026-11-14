@@ -131,7 +131,7 @@ async def ecos(service: str, *segments: str | int, ttl: float = 1800) -> dict[st
 SEOUL_SUBWAY_BASE = "http://swopenapi.seoul.go.kr/api/subway"
 
 
-def _seoul_parser(list_key: str):
+def _seoul_parser(list_key: str, sample: bool = False):
     def parse(resp: httpx.Response) -> Any:
         if resp.status_code >= 500 or resp.status_code == 429:
             return None
@@ -150,6 +150,10 @@ def _seoul_parser(list_key: str):
                            "SEOUL_OPENAPI_KEY 에 '실시간 지하철' 인증키를 넣었는지 확인하세요 (일반 인증키와 다름).")
         if code.startswith("ERROR-5"):
             return None
+        if sample and code == "ERROR-336":
+            # 샘플 키는 '서울'역만 허용하고, 다른 역은 엉뚱한 건수 오류를 돌려준다
+            raise ApiError(Code.AUTH_ERROR, "시험용 sample 키로는 '서울'역만 조회할 수 있습니다.",
+                           "https://data.seoul.go.kr 에서 '실시간 지하철' 인증키를 발급받아 SEOUL_OPENAPI_KEY 에 넣으세요.")
         raise ApiError(Code.INVALID_PARAM, f"서울 열린데이터광장 오류: {msg} ({code})")
     return parse
 
@@ -160,5 +164,5 @@ async def seoul_subway(service: str, start: int, end: int, arg: str, list_key: s
         start, end = 0, 5
     url = f"{SEOUL_SUBWAY_BASE}/{key}/json/{service}/{start}/{end}/{arg}"
     # 실시간 정보라 캐시는 아주 짧게
-    return await http.fetch("서울 열린데이터광장", url, None, _seoul_parser(list_key), ttl=20,
+    return await http.fetch("서울 열린데이터광장", url, None, _seoul_parser(list_key, key == "sample"), ttl=20,
                             cache_key=("seoul", service, start, end, arg))
